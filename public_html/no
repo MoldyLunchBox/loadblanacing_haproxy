@@ -1,0 +1,34 @@
+
+
+<html>
+<body>
+    <h1>hello abdum</h1>
+</body>
+</html>
+
+
+global
+	log 127.0.0.1 local0 notice
+	maxconn 2000
+	user haproxy
+	group haproxy
+defaults
+	log     global
+	mode    http
+	option  httplog
+	option  dontlognull
+	retries 3
+	option redispatch
+	timeout connect  5000
+	timeout client  10000
+	timeout server  10000
+
+frontend  www
+    bind 172.18.0.3:80
+    default_backend nginx_pool
+
+backend nginx_pool
+    balance     roundrobin
+    mode http
+    server  site1.com 10.11.100.83:8080 check
+    server  site2.com 10.11.100.83:8080 check
